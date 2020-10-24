@@ -28,8 +28,8 @@ matrix:
   include:
     - php: 7.2
       env: PREFER_LOWEST=1
-
-  fast_finish: true
+    - php: nightly
+      env: DB=sqlite DB_URL='sqlite:///:memory:'
 
 before_install:
   - echo cakephp version && tail -1 VERSION.txt
@@ -44,8 +44,8 @@ before_install:
       fi
 
   - |
+      phpenv config-rm xdebug.ini
       if [[ $TRAVIS_PHP_VERSION != 'nightly' ]]; then
-        phpenv config-rm xdebug.ini
         echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         echo 'extension = redis.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         echo 'extension = apcu.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini

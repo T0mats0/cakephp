@@ -51,7 +51,7 @@ class Exception extends RuntimeException
      *
      * @var int
      */
-    protected $_defaultCode = 500;
+    protected $_defaultCode = 0;
 
     /**
      * Constructor.
@@ -61,20 +61,16 @@ class Exception extends RuntimeException
      *
      * @param string|array $message Either the string of the error message, or an array of attributes
      *   that are made available in the view, and sprintf()'d into Exception::$_messageTemplate
-     * @param int|null $code The code of the error, is also the HTTP status code for the error.
+     * @param int|null $code The error code
      * @param \Throwable|null $previous the previous exception.
      */
     public function __construct($message = '', ?int $code = null, ?Throwable $previous = null)
     {
-        if ($code === null) {
-            $code = $this->_defaultCode;
-        }
-
         if (is_array($message)) {
             $this->_attributes = $message;
             $message = vsprintf($this->_messageTemplate, $message);
         }
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $code ?? $this->_defaultCode, $previous);
     }
 
     /**
@@ -96,12 +92,20 @@ class Exception extends RuntimeException
      *   array of "header name" => "header value"
      * @param string|null $value The header value.
      * @return array|null
+     * @deprecated 4.2.0 Use `HttpException::setHeaders()` instead. Response headers
+     *   should be set for HttpException only.
      */
     public function responseHeader($header = null, $value = null): ?array
     {
         if ($header === null) {
             return $this->_responseHeaders;
         }
+
+        deprecationWarning(
+            'Setting HTTP response headers from Exception directly is deprecated. ' .
+            'If your exceptions extend Exception, they must now extend HttpException. ' .
+            'You should only set HTTP headers on HttpException instances via the `setHeaders()` method.'
+        );
         if (is_array($header)) {
             return $this->_responseHeaders = $header;
         }

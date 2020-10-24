@@ -73,6 +73,12 @@
       <code>$request</code>
     </ArgumentTypeCoercion>
   </file>
+  <file src="src/Core/ServiceProvider.php">
+    <MethodSignatureMismatch occurrences="2">
+      <code>ServiceProvider</code>
+      <code>public function getContainer(): ContainerInterface</code>
+    </MethodSignatureMismatch>
+  </file>
   <file src="src/Database/Driver.php">
     <InvalidScalarArgument occurrences="2">
       <code>$value</code>
@@ -113,6 +119,18 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$time</code>
     </ArgumentTypeCoercion>
+  </file>
+  <file src="src/I18n/functions.php">
+    <InternalMethod occurrences="8">
+      <code>translate</code>
+      <code>translate</code>
+      <code>translate</code>
+      <code>translate</code>
+      <code>translate</code>
+      <code>translate</code>
+      <code>translate</code>
+      <code>translate</code>
+    </InternalMethod>
   </file>
   <file src="src/ORM/Association/BelongsToMany.php">
     <InvalidArgument occurrences="1">
@@ -169,11 +187,11 @@
   </file>
   <file src="src/TestSuite/Fixture/TestFixture.php">
     <ArgumentTypeCoercion occurrences="5">
-      <code>$db</code>
-      <code>$db</code>
-      <code>$db</code>
-      <code>$db</code>
-      <code>$db</code>
+      <code>$connection</code>
+      <code>$connection</code>
+      <code>$connection</code>
+      <code>$connection</code>
+      <code>$connection</code>
     </ArgumentTypeCoercion>
   </file>
   <file src="src/TestSuite/IntegrationTestTrait.php">

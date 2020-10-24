@@ -18,6 +18,8 @@ namespace Cake\Database\Driver;
 
 use Cake\Database\Driver;
 use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\IdentifierExpression;
+use Cake\Database\Expression\StringExpression;
 use Cake\Database\PostgresCompiler;
 use Cake\Database\Query;
 use Cake\Database\QueryCompiler;
@@ -222,8 +224,25 @@ class Postgres extends Driver
     protected function _expressionTranslators(): array
     {
         return [
+            IdentifierExpression::class => '_transformIdentifierExpression',
             FunctionExpression::class => '_transformFunctionExpression',
+            StringExpression::class => '_transformStringExpression',
         ];
+    }
+
+    /**
+     * Changes identifer expression into postgresql format.
+     *
+     * @param \Cake\Database\Expression\IdentifierExpression $expression The expression to tranform.
+     * @return void
+     */
+    protected function _transformIdentifierExpression(IdentifierExpression $expression): void
+    {
+        $collation = $expression->getCollation();
+        if ($collation) {
+            // use trim() to work around expression being transformed multiple times
+            $expression->setCollation('"' . trim($collation, '"') . '"');
+        }
     }
 
     /**
@@ -289,6 +308,18 @@ class Postgres extends Driver
                     ->add([') + (1' => 'literal']); // Postgres starts on index 0 but Sunday should be 1
                 break;
         }
+    }
+
+    /**
+     * Changes string expression into postgresql format.
+     *
+     * @param \Cake\Database\Expression\StringExpression $expression The string expression to tranform.
+     * @return void
+     */
+    protected function _transformStringExpression(StringExpression $expression): void
+    {
+        // use trim() to work around expression being transformed multiple times
+        $expression->setCollation('"' . trim($expression->getCollation(), '"') . '"');
     }
 
     /**
